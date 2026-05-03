@@ -3,13 +3,23 @@
     "description": "Theme manager for Pubvana CMS",
     "type": "flightphp-plugin",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "pubvana",
+            "email": "cs@pubvana.net"
+        }
+    ],
     "require": {
         "php": "^8.1",
         "enlivenapp/flight-school": "^0.2",
-        "pubvana/admin": "*",
-        "enlivenapp/flight-shield": "*",
-        "enlivenapp/migrations": "*",
+        "enlivenapp/flight-shield": "^0.1",
+        "enlivenapp/flight-settings": "^0.1",
+        "enlivenapp/migrations": "^0.1",
+        "ezyang/htmlpurifier": "^4.19",
         "flightphp/active-record": "^0.7"
+    },
+    "suggest": {
+        "pubvana/admin": "Admin UI for theme selection and management"
     },
     "autoload": {
         "psr-4": {

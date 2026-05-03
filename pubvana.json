@@ -1,0 +1,10 @@
+{
+    "display_name": "Themes",
+    "description": "Theme manager for Pubvana CMS",
+    "category": "appearance",
+    "provides": {
+        "content_types": [],
+        "content_type_supports": [],
+        "blocks": []
+    }
+}

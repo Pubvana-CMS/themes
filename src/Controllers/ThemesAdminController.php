@@ -31,6 +31,14 @@ class ThemesAdminController extends AdminController
         $service = $this->service();
         $service->sync();
 
+        // Force-republish all package assets on sync
+        $cssEntries = $this->app->adext('head', 'css') ?: [];
+        $jsEntries = $this->app->adext('footer', 'js') ?: [];
+        $allEntries = array_merge($cssEntries, $jsEntries);
+        if (!empty($allEntries)) {
+            $service->publishPackageAssets($allEntries, true);
+        }
+
         $themes = (new \Pubvana\Themes\Models\Theme($this->app->get('db')))->getAll();
 
         $theme_info = [];
@@ -51,7 +59,18 @@ class ThemesAdminController extends AdminController
      */
     public function activate(string $id): void
     {
-        $status = $this->service()->activate((int) $id);
+        $service = $this->service();
+        $status = $service->activate((int) $id);
+
+        // Force-republish all package assets on activate
+        if ($status === 'activated') {
+            $cssEntries = $this->app->adext('head', 'css') ?: [];
+            $jsEntries = $this->app->adext('footer', 'js') ?: [];
+            $allEntries = array_merge($cssEntries, $jsEntries);
+            if (!empty($allEntries)) {
+                $service->publishPackageAssets($allEntries, true);
+            }
+        }
 
         $flash = match ($status) {
             'activated' => ['success', 'Theme activated.'],

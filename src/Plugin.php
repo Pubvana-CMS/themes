@@ -36,7 +36,19 @@ class Plugin implements PluginInterface
 
         $activeTheme = $app->themes()->getActive();
         if ($activeTheme !== null && !empty($activeTheme->folder)) {
-            $app->themes()->publishAssets((string) $activeTheme->folder);
+            $folder = (string) $activeTheme->folder;
+            $dest = $app->themes()->getPublicPath() . 'themes/' . $folder . '/assets';
+            if (!is_dir($dest)) {
+                $app->themes()->publishAssets($folder);
+            }
+        }
+
+        // Publish package assets on first run (directory missing)
+        $cssEntries = $app->adext('head', 'css') ?: [];
+        $jsEntries = $app->adext('footer', 'js') ?: [];
+        $allEntries = array_merge($cssEntries, $jsEntries);
+        if (!empty($allEntries)) {
+            $app->themes()->publishPackageAssets($allEntries, false);
         }
 
         $app->adext('menu', 'appearance', 'pubvana.themes', [

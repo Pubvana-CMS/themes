@@ -304,6 +304,66 @@ class ThemeService
     }
 
     /**
+     * Publish assets for packages that registered via adext('head', 'css').
+     *
+     * Copies vendor/{vendor}/{package}/assets/ → public/assets/{vendor}/{package}/
+     *
+     * @param array  $registered adext('head', 'css') entries
+     * @param bool   $force      When false, skip packages whose destination already exists
+     */
+    public function publishPackageAssets(array $registered, bool $force = false): void
+    {
+        $root = defined('PROJECT_ROOT') ? PROJECT_ROOT : dirname(__DIR__, 5);
+        $vendorBase = rtrim($root, '/') . '/vendor/';
+        $publicBase = $this->getPublicPath() . 'assets/';
+
+        $published = [];
+
+        foreach ($registered as $entry) {
+            $vendor = $entry['vendor'] ?? '';
+            $package = $entry['package'] ?? '';
+
+            if ($vendor === '' || $package === '') {
+                continue;
+            }
+
+            // Don't publish the same vendor/package twice
+            $key = $vendor . '/' . $package;
+            if (isset($published[$key])) {
+                continue;
+            }
+            $published[$key] = true;
+
+            // Validate names — alphanumeric, hyphens, underscores only
+            if (!preg_match('/^[a-zA-Z0-9_-]+$/', $vendor) || !preg_match('/^[a-zA-Z0-9_-]+$/', $package)) {
+                continue;
+            }
+
+            $dest = $publicBase . $vendor . '/' . $package;
+
+            if (!$force && is_dir($dest)) {
+                continue;
+            }
+
+            $source = $vendorBase . $vendor . '/' . $package . '/assets';
+            if (!is_dir($source)) {
+                continue;
+            }
+
+            if (is_dir($dest)) {
+                $this->removeDirectory($dest);
+            }
+
+            $parentDir = $publicBase . $vendor;
+            if (!is_dir($parentDir)) {
+                mkdir($parentDir, 0755, true);
+            }
+
+            $this->copyDirectory($source, $dest);
+        }
+    }
+
+    /**
      * Get validation results (populated after sync() runs).
      *
      * @return array<string, bool> folder => isValid
@@ -383,7 +443,7 @@ class ThemeService
         return rtrim($root, '/') . '/themes/';
     }
 
-    protected function getPublicPath(): string
+    public function getPublicPath(): string
     {
         $root = defined('PROJECT_ROOT') ? PROJECT_ROOT : dirname(__DIR__, 5);
         return rtrim($root, '/') . '/public/';

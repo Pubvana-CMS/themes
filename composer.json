@@ -11,10 +11,10 @@
     ],
     "require": {
         "php": "^8.1",
-        "enlivenapp/flight-school": "^0.2",
-        "enlivenapp/flight-shield": "^0.1",
-        "enlivenapp/flight-settings": "^0.1",
-        "enlivenapp/migrations": "^0.1",
+        "enlivenapp/flight-school": "^0.3",
+        "enlivenapp/flight-shield": "^0.2",
+        "enlivenapp/flight-settings": "^0.2",
+        "enlivenapp/migrations": "^0.2",
         "ezyang/htmlpurifier": "^4.19",
         "flightphp/active-record": "^0.7"
     },

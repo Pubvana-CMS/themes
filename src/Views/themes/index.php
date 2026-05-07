@@ -70,6 +70,16 @@
                 </div>
                 <?php endif; ?>
 
+                <?php $supports = $info['supports'] ?? []; ?>
+                <?php if (!empty($supports)): ?>
+                <div class="mb-2">
+                    <small class="text-secondary d-block mb-1">Supports</small>
+                    <?php foreach ($supports as $pkg): ?>
+                        <span class="badge bg-green-lt me-1 mb-1"><?= htmlspecialchars($pkg) ?></span>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+
                 <?php if (!$isValid): ?>
                     <div class="alert alert-danger small py-1 px-2 mt-2 mb-0">
                         <i class="ti ti-alert-triangle"></i> PHP detected in theme files — activation blocked.
